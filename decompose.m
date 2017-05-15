@@ -1,9 +1,16 @@
-%This function is to decompose Esstential Matrix E to Translation Vector t and
-%Rotation Matrix R
+% Author: Shaotu Jia
+% Breif: This function is to decompose Esstential Matrix E to
+% skew-sysmetric matrix S and Rotation R; The S and R must keep the
+% reconstructed point in front of camera
+% param: R Rotation Matrix 
+% param: S skew-sysmetric matrix
+% param: E essential matrix
+% param: size the number of matched points
 % x1 and x2 are the corresponding points of X in two images
 
 function [S, R] = decompose(E, x1, x2, size)
 
+% initialize R and S
 R = 0;
 S = 0;
 
@@ -50,39 +57,18 @@ A4 = [x1(1,j)*P1(3,:)-P1(1,:); x1(2,j)*P1(3,:)-P1(2,:); x2(1,j)*P2_4(3,:)-P2_4(1
 [U3, D3, V3] = svd(A3);
 [U4, D4, V4] = svd(A4);
 
-%{
-[M1 N1] = min(diag(D1));
-[M2 N2] = min(diag(D2));
-[M3 N3] = min(diag(D3));
-[M4 N4] = min(diag(D4));
-%}
-
 X1 = V1(:,4);
 X2 = V2(:,4);
 X3 = V3(:,4);
 X4 = V4(:,4);
 
-%{
-% Solve X since AX = 0, X is right null space of A
-X1 = null(A1);
-X2 = null(A2);
-X3 = null(A3);
-X4 = null(A4);
-
-if ~isempty(X1) || ~isempty(X2) || ~isempty(X3) || ~isempty(X4)
-    disp('j = ');
-    disp(j);
-end
-%}
-
 % The X point must be in front of camrea; Find the R and S let X point in
-% front of the camrea
+% front of the camrea. The reconstructed point X is the format (x,y,z,1).
+% the S and R let z > 0 is the decomposed matrix we need
 if ~isempty(X1) && (X1(3)/X1(4))>0 
     X = X1;
     R = R2;
     S = S2;
-    %disp('X = ');
-    %disp(X);
     break;
 end
 
@@ -90,8 +76,6 @@ if ~isempty(X2) && (X2(3)/X2(4))>0
     X = X2;
     R = R1;
     S = S2;
-    %disp('X = ');
-    %disp(X);
     break;
 end
 
@@ -99,8 +83,6 @@ if ~isempty(X3) && (X3(3)/X3(4))>0
     X = X3;
     R = R2;
     S = S1;
-    %disp('X = ');
-    %disp(X);
     break;
 end
 
@@ -108,12 +90,9 @@ if ~isempty(X4) && (X4(3)/X4(4))>0
     X = X4;
     R = R1;
     S = S1;
-    %disp('X = ');
-    %disp(X);
     break;
 end
 
 end
-
 
 end

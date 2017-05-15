@@ -1,12 +1,7 @@
 % This is the main script to run program
-%{
-I = imread('1399381444704913.png');
-image = demosaic(I,'grbg');
-figure(1), imshow(image);
-
-undistorted = UndistortImage(image, LUT);
-figure(2), imshow(undistorted);
-%}
+% Here uses the vl_feat toolbox to match points based on SIFT algorithm
+% !! Please $ run('vlfeat-0.9.20\toolbox\vl_setup.m') $ before run this
+% main script !!
 
 clc;
 clear;
@@ -28,8 +23,8 @@ P = [0;0;0];
 %Set of Carmea Position
 Set_P = P;
 
-for k = 2 : FrameNum
-%for k = 2 : 2
+%for k = 2 : FrameNum-1 % The last Frame missed!
+for k = 2 : 10
     
 imageNum_1 = num2str(timestamps(k-1,1));
 imageNum_2 = num2str(timestamps(k,1));
@@ -59,14 +54,13 @@ image_2_gray = rgb2gray(image_2_und);
 %update the position of carmea center
 P = P + n;
 
-%plot the position fo carmea center and assume the initial position of
+%Save the position fo carmea center and assume the initial position of
 %carmea is (0,0,0)
-%figure(1), title('Position of Carmea Center');
-%scatter3(P(1),P(2),P(3),'.','MarkerEdgeColor','k');
-%hold on;
 Set_P = horzcat(Set_P, P);
 end
 
+% draw carmea center trajectory and X-Z plane is the ground and Y is the
+% altitude
 figure(1), scatter3(Set_P(1,:),Set_P(2,:),Set_P(3,:),'.','MarkerEdgeColor','b');
 title('Position of Carmea Center');
 xlabel('X'); % x-axis label

@@ -23,9 +23,7 @@ P = [0;0;0];
 %Set of Carmea Position
 Set_P = P;
 
-%for k = 2 : FrameNum-1 % The last Frame missed!
-for k = 2 : 10
-    
+for k = 2 : FrameNum-1 % The last Frame missed!    
 imageNum_1 = num2str(timestamps(k-1,1));
 imageNum_2 = num2str(timestamps(k,1));
 imageName_1 = strcat('stereo/','centre/',imageNum_1,'.png');
@@ -46,9 +44,7 @@ image_2_und = UndistortImage(image_2_demo, LUT);
 image_1_gray = rgb2gray(image_1_und);
 image_2_gray = rgb2gray(image_2_und);
 
-%figure(1), imshow(image_1_gray);
-%figure(2), imshow(image_2_gray);
-
+% find results from decompose essential matrix
 [S, R, t, n] = essentMatrix(image_1_gray, image_2_gray, K);
 
 %update the position of carmea center
@@ -61,8 +57,8 @@ end
 
 % draw carmea center trajectory and X-Z plane is the ground and Y is the
 % altitude
-figure(1), scatter3(Set_P(1,:),Set_P(2,:),Set_P(3,:),'.','MarkerEdgeColor','b');
+figure(1), scatter3(Set_P(3,:),Set_P(1,:),Set_P(2,:),'.','MarkerEdgeColor','b');
 title('Position of Carmea Center');
-xlabel('X'); % x-axis label
-ylabel('Y'); % y-axis label
-zlabel('Z'); % z-axis label
+xlabel('Z'); % x-axis label
+ylabel('X'); % y-axis label
+zlabel('Y'); % z-axis label
